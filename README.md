@@ -42,19 +42,19 @@ MediFlow AI acts as a **Digital Hospital Brain**:
 ---
 
 ## 🏗️ Architecture
-
+```bash
 User → Frontend → Backend → AI Layer → DB → Response
-
+```
 ---
 
 ## 📁 Structure
-
+```bash
 mediflow-ai/
 ├── frontend/
 ├── backend/
 ├── docker-compose.yml
 └── README.md
-
+```
 ---
 
 ## ⚙️ Tech Stack
@@ -67,30 +67,30 @@ Cloud: Google Cloud Run
 ---
 
 ## 🚀 Run Locally
-
+```bash
 Backend:
 cd backend  
 pip install -r requirements.txt  
-uvicorn app.main:app --reload  
+uvicorn app.main:app --reload
 
 Frontend:
 cd frontend  
 npm install  
 npm run dev  
-
+```
 ---
 
 ## 🐳 Docker
-
+```
 docker-compose up --build  
-
+```
 ---
 
 ## ☁️ Deployment
-
+```bash
 gcloud builds submit --tag gcr.io/PROJECT_ID/mediflow  
 gcloud run deploy mediflow --region asia-south1  
-
+```
 ---
 
 ## 🏆 Highlights
