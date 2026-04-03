@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>{% block title %}MediFlow AI{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#004bca", "primary-container": "#0061ff", "primary-fixed": "#dbe1ff",
+            "primary-fixed-dim": "#b4c5ff", "on-primary": "#ffffff", "on-primary-fixed": "#00174b",
+            "on-primary-fixed-variant": "#003ea8", "secondary": "#006c49", "secondary-container": "#6cf8bb",
+            "on-secondary": "#ffffff", "on-secondary-container": "#00714d", "tertiary": "#ad0e1d",
+            "tertiary-container": "#d12e32", "tertiary-fixed": "#ffdad7", "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#ffefee", "on-tertiary-fixed-variant": "#930013",
+            "surface": "#f8f9ff", "surface-container": "#e5eeff", "surface-container-low": "#eff4ff",
+            "surface-container-high": "#dce9ff", "surface-container-highest": "#d3e4fe",
+            "surface-container-lowest": "#ffffff", "surface-dim": "#cbdbf5", "surface-variant": "#d3e4fe",
+            "on-surface": "#0b1c30", "on-surface-variant": "#424656", "outline": "#737687",
+            "outline-variant": "#c2c6d9", "background": "#f8f9ff", "on-background": "#0b1c30",
+            "error": "#ba1a1a", "error-container": "#ffdad6", "on-error": "#ffffff",
+          },
+          fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, .brand-font { font-family: 'Manrope', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .glass-effect { background: rgba(211, 228, 254, 0.6); backdrop-filter: blur(20px); }
+    .fade-in { animation: fadeIn 0.4s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-background text-on-background antialiased">
+
+  {# ── Flash Messages ─────────────────────────────────── #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="fixed top-4 right-4 z-[100] space-y-2 max-w-sm">
+        {% for category, message in messages %}
+          <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium fade-in
+            {% if category == 'success' %}bg-secondary-container text-on-secondary-container
+            {% elif category == 'danger' %}bg-error-container text-on-error
+            {% elif category == 'warning' %}bg-yellow-100 text-yellow-800
+            {% else %}bg-surface-container text-on-surface{% endif %}">
+            <span class="material-symbols-outlined text-sm">
+              {% if category == 'success' %}check_circle{% elif category == 'danger' %}error{% else %}info{% endif %}
+            </span>
+            {{ message }}
+            <button onclick="this.parentElement.remove()" class="ml-auto opacity-60 hover:opacity-100">✕</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block body %}{% endblock %}
+
+  <script>
+    // Auto-dismiss flash messages after 4 seconds
+    setTimeout(() => {
+      document.querySelectorAll('[class*="bg-secondary-container"], [class*="bg-error-container"]')
+        .forEach(el => el.style.display = 'none');
+    }, 4000);
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

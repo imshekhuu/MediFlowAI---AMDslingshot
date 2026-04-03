@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}MediFlow AI — Sidebar layout{% endblock %}
+{% block head %}
+<style>
+  .sidebar-link { @apply flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-blue-50 transition-colors duration-200 rounded-lg; }
+  .sidebar-active { @apply bg-blue-100 text-blue-700 font-semibold rounded-full; }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-blue-50/50 flex flex-col py-6 px-4 z-50">
+  <!-- Logo -->
+  <div class="mb-10 px-4">
+    <a href="{{ url_for('index') }}" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+        <span class="material-symbols-outlined">medical_services</span>
+      </div>
+      <div>
+        <p class="text-xl font-bold tracking-tight text-slate-900">MediFlow AI</p>
+        <p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Clinical Sanctuary</p>
+      </div>
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex flex-col gap-1 flex-1">
+    <a href="{{ url_for('dashboard') }}"
+       class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 rounded-lg
+              {% if request.endpoint == 'dashboard' %}bg-blue-100 text-blue-700 font-semibold rounded-full{% else %}text-slate-500 hover:text-slate-900 hover:bg-blue-50{% endif %}">
+      <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
+    </a>
+
+    {% if role in ['doctor', 'admin'] %}
+    <a href="{{ url_for('patients') }}"
+       class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 rounded-lg
+              {% if request.endpoint == 'patients' %}bg-blue-100 text-blue-700 font-semibold rounded-full{% else %}text-slate-500 hover:text-slate-900 hover:bg-blue-50{% endif %}">
+      <span class="material-symbols-outlined">groups</span><span>Patients</span>
+    </a>
+    {% endif %}
+
+    {% if role == 'patient' %}
+    <a href="{{ url_for('symptoms') }}"
+       class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 rounded-lg
+              {% if request.endpoint == 'symptoms' %}bg-blue-100 text-blue-700 font-semibold rounded-full{% else %}text-slate-500 hover:text-slate-900 hover:bg-blue-50{% endif %}">
+      <span class="material-symbols-outlined">medical_information</span><span>Symptoms</span>
+    </a>
+    <a href="{{ url_for('history') }}"
+       class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 rounded-lg
+              {% if request.endpoint == 'history' %}bg-blue-100 text-blue-700 font-semibold rounded-full{% else %}text-slate-500 hover:text-slate-900 hover:bg-blue-50{% endif %}">
+      <span class="material-symbols-outlined">history</span><span>My History</span>
+    </a>
+    {% endif %}
+
+    <a href="{{ url_for('appointments') }}"
+       class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 rounded-lg
+              {% if request.endpoint == 'appointments' %}bg-blue-100 text-blue-700 font-semibold rounded-full{% else %}text-slate-500 hover:text-slate-900 hover:bg-blue-50{% endif %}">
+      <span class="material-symbols-outlined">calendar_month</span><span>Appointments</span>
+    </a>
+
+    <a href="{{ url_for('ai_chat') }}"
+       class="flex items-center gap-3 px-4 py-3 transition-colors duration-200 rounded-lg
+              {% if request.endpoint == 'ai_chat' %}bg-blue-100 text-blue-700 font-semibold rounded-full{% else %}text-slate-500 hover:text-slate-900 hover:bg-blue-50{% endif %}">
+      <span class="material-symbols-outlined">smart_toy</span><span>AI Assistant</span>
+    </a>
+  </nav>
+
+  <!-- User + Logout -->
+  <div class="mt-auto px-2 space-y-3">
+    <div class="px-4 py-3 bg-surface-container-lowest rounded-xl">
+      <p class="text-xs font-bold text-on-surface">{{ email }}</p>
+      <p class="text-[10px] text-on-surface-variant capitalize">{{ role }}</p>
+    </div>
+    <a href="{{ url_for('logout') }}"
+       class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+      <span class="material-symbols-outlined">logout</span><span>Logout</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="ml-64 min-h-screen flex flex-col">
+  <!-- Top Bar -->
+  <header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-white/80 backdrop-blur-xl flex justify-between items-center px-8">
+    <div class="flex items-center flex-1 max-w-xl">
+      <div class="relative w-full">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+        <input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-11 pr-4 text-sm focus:ring-2 focus:ring-primary/20"
+               placeholder="Search patients, appointments..." type="text"/>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="hover:bg-slate-100 rounded-full p-2 text-slate-500">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+        {{ email[0].upper() if email else 'U' }}
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="mt-16 p-8 flex-1">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-6 px-8 bg-slate-50 border-t border-slate-100 text-center">
+    <p class="text-xs text-slate-400">© 2024 MediFlow AI — The Clinical Sanctuary</p>
+  </footer>
+</div>
+{% endblock %}

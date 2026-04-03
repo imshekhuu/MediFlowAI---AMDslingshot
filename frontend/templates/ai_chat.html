@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}MediFlow AI — AI Assistant{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto h-[calc(100vh-12rem)] flex flex-col">
+  <div class="mb-6">
+    <h2 class="text-3xl font-extrabold text-on-surface mb-1">MediFlow AI Assistant</h2>
+    <p class="text-on-surface-variant text-sm">Ask me about symptoms, medications, or health guidance.</p>
+  </div>
+
+  <!-- Chat window -->
+  <div id="chat-window" class="flex-1 bg-surface-container-lowest rounded-3xl p-6 overflow-y-auto space-y-4 mb-4">
+    <!-- Initial bot message -->
+    <div class="flex items-start gap-3">
+      <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+        <span class="material-symbols-outlined text-sm">smart_toy</span>
+      </div>
+      <div class="bg-surface-container rounded-2xl rounded-tl-none px-4 py-3 max-w-[80%]">
+        <p class="text-sm text-on-surface">Welcome to MediFlow AI! I'm here to help with health queries. How can I assist you today?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input area -->
+  <form id="chat-form" class="flex gap-3">
+    <input id="chat-input" type="text" autocomplete="off"
+           class="flex-1 bg-surface-container-lowest border-none rounded-2xl py-3 px-5 text-sm focus:ring-2 focus:ring-primary/30 placeholder:text-outline"
+           placeholder="Describe symptoms or ask a health question..."/>
+    <button type="submit"
+            class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white hover:opacity-90 transition-all flex-shrink-0">
+      <span class="material-symbols-outlined">send</span>
+    </button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const form = document.getElementById('chat-form');
+const input = document.getElementById('chat-input');
+const chatWindow = document.getElementById('chat-window');
+
+function addMessage(text, isUser = false) {
+  const div = document.createElement('div');
+  div.className = `flex items-start gap-3 ${isUser ? 'justify-end' : ''}`;
+  div.innerHTML = isUser
+    ? `<div class="bg-primary rounded-2xl rounded-tr-none px-4 py-3 max-w-[80%]">
+         <p class="text-sm text-white">${text}</p>
+       </div>
+       <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface flex-shrink-0 font-bold text-xs">
+         You
+       </div>`
+    : `<div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+         <span class="material-symbols-outlined text-sm">smart_toy</span>
+       </div>
+       <div class="bg-surface-container rounded-2xl rounded-tl-none px-4 py-3 max-w-[80%]">
+         <p class="text-sm text-on-surface">${text}</p>
+       </div>`;
+  chatWindow.appendChild(div);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.id = 'typing';
+  div.className = 'flex items-start gap-3';
+  div.innerHTML = `<div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+    <span class="material-symbols-outlined text-sm">smart_toy</span>
+  </div>
+  <div class="bg-surface-container rounded-2xl rounded-tl-none px-4 py-3">
+    <div class="flex gap-1"><div class="w-2 h-2 bg-outline rounded-full animate-bounce" style="animation-delay:0ms"></div>
+    <div class="w-2 h-2 bg-outline rounded-full animate-bounce" style="animation-delay:150ms"></div>
+    <div class="w-2 h-2 bg-outline rounded-full animate-bounce" style="animation-delay:300ms"></div></div>
+  </div>`;
+  chatWindow.appendChild(div);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const message = input.value.trim();
+  if (!message) return;
+  
+  addMessage(message, true);
+  input.value = '';
+  addTyping();
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    const data = await response.json();
+    document.getElementById('typing')?.remove();
+    addMessage(data.reply || data.detail || 'Sorry, I could not process your request.');
+  } catch (err) {
+    document.getElementById('typing')?.remove();
+    addMessage('Connection error. Please check the backend server.');
+  }
+});
+</script>
+{% endblock %}

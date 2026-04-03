@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+{% block title %}MediFlow AI — Dashboard{% endblock %}
+
+{% block content %}
+<!-- Greeting -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+  <div>
+    <h2 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2">
+      Good {{ 'morning' if now_hour < 12 else 'afternoon' if now_hour < 17 else 'evening' }}, {{ email.split('@')[0].replace('.', ' ').title() }}
+    </h2>
+    <p class="text-on-surface-variant font-medium">
+      Role: <span class="text-primary font-bold capitalize">{{ role }}</span> &mdash; MediFlow AI Clinical Sanctuary
+    </p>
+  </div>
+  <div class="flex items-center gap-3 bg-surface-container-lowest p-4 rounded-2xl">
+    <div class="w-10 h-10 bg-secondary-container rounded-xl flex items-center justify-center text-on-secondary-container">
+      <span class="material-symbols-outlined">check_circle</span>
+    </div>
+    <div>
+      <p class="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant">System Status</p>
+      <p class="font-bold text-secondary text-sm">All Nodes Active</p>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bento Grid -->
+{% if role in ['admin', 'doctor'] and stats %}
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <!-- Total Patients -->
+  <div class="bg-surface-container-lowest p-6 rounded-2xl flex flex-col justify-between h-36">
+    <div class="flex justify-between items-start">
+      <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined">person</span>
+      </div>
+      <span class="text-xs font-bold text-secondary flex items-center gap-1">
+        <span class="material-symbols-outlined text-xs">trending_up</span>Active
+      </span>
+    </div>
+    <div>
+      <p class="text-3xl font-black">{{ stats.summary.total_patients | default('—') }}</p>
+      <p class="text-sm font-medium text-on-surface-variant">Total Patients</p>
+    </div>
+  </div>
+
+  <!-- Total Doctors -->
+  <div class="bg-surface-container-lowest p-6 rounded-2xl flex flex-col justify-between h-36">
+    <div class="flex justify-between items-start">
+      <div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary">
+        <span class="material-symbols-outlined">stethoscope</span>
+      </div>
+      <span class="text-xs font-bold text-on-surface-variant">Staff</span>
+    </div>
+    <div>
+      <p class="text-3xl font-black">{{ stats.summary.total_doctors | default('—') }}</p>
+      <p class="text-sm font-medium text-on-surface-variant">Total Doctors</p>
+    </div>
+  </div>
+
+  <!-- Emergency -->
+  <div class="bg-tertiary-container p-6 rounded-2xl flex flex-col justify-between h-36 text-on-tertiary shadow-xl shadow-tertiary/20">
+    <div class="flex justify-between items-start">
+      <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined">emergency</span>
+      </div>
+      <span class="bg-white/20 px-2 py-1 rounded-full text-[10px] font-bold uppercase">High</span>
+    </div>
+    <div>
+      <p class="text-3xl font-black">{{ stats.patient_priority_distribution.Emergency | default('0') }}</p>
+      <p class="text-sm font-medium opacity-90">Critical Cases</p>
+    </div>
+  </div>
+
+  <!-- AI Diagnostics -->
+  <div class="bg-primary p-6 rounded-2xl flex flex-col justify-between h-36 text-on-primary shadow-xl shadow-primary/20">
+    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+      <span class="material-symbols-outlined">auto_awesome</span>
+    </div>
+    <div>
+      <p class="text-xl font-bold">AI Diagnostics</p>
+      <p class="text-sm opacity-80">{{ stats.ai_accuracy | default('98.4%') }} Accuracy</p>
+    </div>
+  </div>
+</section>
+
+<!-- Priority Distribution -->
+{% if stats.patient_priority_distribution %}
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+  <div class="lg:col-span-2 bg-surface-container-lowest rounded-3xl p-8">
+    <h3 class="text-xl font-bold mb-6">Patient Priority Distribution</h3>
+    <div class="space-y-4">
+      {% set emergency = stats.patient_priority_distribution.Emergency | default(0) %}
+      {% set medium = stats.patient_priority_distribution.Medium | default(0) %}
+      {% set normal = stats.patient_priority_distribution.Normal | default(0) %}
+      {% set total = (emergency + medium + normal) | default(1) %}
+      
+      <div class="flex items-center gap-4">
+        <span class="text-sm font-bold w-20 text-tertiary">Emergency</span>
+        <div class="flex-1 h-3 bg-surface-container rounded-full overflow-hidden">
+          <div class="h-full bg-tertiary rounded-full transition-all" style="width: {{ (emergency / total * 100) | round }}%"></div>
+        </div>
+        <span class="text-sm font-bold w-8 text-right">{{ emergency }}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-sm font-bold w-20 text-yellow-600">Medium</span>
+        <div class="flex-1 h-3 bg-surface-container rounded-full overflow-hidden">
+          <div class="h-full bg-yellow-400 rounded-full" style="width: {{ (medium / total * 100) | round }}%"></div>
+        </div>
+        <span class="text-sm font-bold w-8 text-right">{{ medium }}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-sm font-bold w-20 text-secondary">Normal</span>
+        <div class="flex-1 h-3 bg-surface-container rounded-full overflow-hidden">
+          <div class="h-full bg-secondary rounded-full" style="width: {{ (normal / total * 100) | round }}%"></div>
+        </div>
+        <span class="text-sm font-bold w-8 text-right">{{ normal }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-surface-container-low rounded-3xl p-8 flex flex-col justify-center items-center text-center">
+    <h4 class="font-bold mb-2">Total Appointments</h4>
+    <p class="text-5xl font-black text-primary mb-2">{{ stats.summary.total_appointments | default('—') }}</p>
+    <p class="text-xs text-on-surface-variant">Across all doctors</p>
+    <a href="{{ url_for('appointments') }}" class="mt-6 w-full py-3 border border-primary/20 rounded-xl text-xs font-bold text-primary hover:bg-primary/5 transition-colors">
+      View Schedule
+    </a>
+  </div>
+</section>
+{% endif %}
+
+{% elif role == 'patient' and stats.patient %}
+<!-- Patient Profile Card -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="bg-surface-container-lowest rounded-3xl p-8">
+    <h3 class="text-xl font-bold mb-6">My Profile</h3>
+    {% if stats.patient.id %}
+    <div class="space-y-3">
+      <div class="flex justify-between"><span class="text-on-surface-variant text-sm">Name</span><span class="font-bold">{{ stats.patient.name }}</span></div>
+      <div class="flex justify-between"><span class="text-on-surface-variant text-sm">Age</span><span class="font-bold">{{ stats.patient.age }}</span></div>
+      <div class="flex justify-between"><span class="text-on-surface-variant text-sm">Blood Group</span><span class="font-bold">{{ stats.patient.blood_group or '—' }}</span></div>
+      <div class="flex justify-between">
+        <span class="text-on-surface-variant text-sm">Priority</span>
+        <span class="px-3 py-1 rounded-full text-xs font-bold
+          {% if stats.patient.priority == 'Emergency' %}bg-tertiary-container text-on-tertiary
+          {% elif stats.patient.priority == 'Medium' %}bg-yellow-100 text-yellow-800
+          {% else %}bg-secondary-container text-on-secondary-container{% endif %}">
+          {{ stats.patient.priority or 'Normal' }}
+        </span>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-on-surface-variant">No profile found. <a href="#" class="text-primary font-bold">Complete registration</a></p>
+    {% endif %}
+  </div>
+  <div class="bg-primary rounded-3xl p-8 text-on-primary">
+    <span class="material-symbols-outlined text-3xl mb-4 block">smart_toy</span>
+    <h3 class="text-xl font-bold mb-3">AI Assistant</h3>
+    <p class="text-primary-fixed/80 text-sm mb-6">Describe your symptoms and get instant AI-powered triage analysis.</p>
+    <a href="{{ url_for('symptoms') }}" class="px-6 py-3 bg-white text-primary rounded-full font-bold text-sm hover:bg-primary-fixed transition-all inline-block">
+      Check Symptoms
+    </a>
+  </div>
+</section>
+{% else %}
+<div class="bg-surface-container-lowest rounded-3xl p-12 text-center">
+  <span class="material-symbols-outlined text-5xl text-outline mb-4 block">dashboard</span>
+  <h3 class="text-xl font-bold mb-2">Welcome to MediFlow AI</h3>
+  <p class="text-on-surface-variant">Your clinical dashboard is ready.</p>
+</div>
+{% endif %}
+{% endblock %}

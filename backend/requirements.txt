@@ -1,0 +1,45 @@
+# MediFlow AI - Backend Requirements
+# Production-ready FastAPI + AI Healthcare Platform
+
+# ─── Core Framework ────────────────────────────────────────
+fastapi
+uvicorn[standard]
+python-multipart==0.0.9
+
+# ─── Database ──────────────────────────────────────────────
+sqlalchemy
+alembic
+# psycopg2-binary==2.9.9        # PostgreSQL driver (production) - disabled for local dev
+# sqlite already built into Python
+
+# ─── Auth & Security ───────────────────────────────────────
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt
+
+# ─── Config ────────────────────────────────────────────────
+python-dotenv==1.0.1
+pydantic[email]
+pydantic-settings
+
+# ─── AI / LLM ──────────────────────────────────────────────
+langchain==0.1.20
+langchain-community==0.0.38
+langchain-core==0.1.52
+# transformers==4.40.2
+# huggingface-hub==0.23.0
+# tokenizers==0.19.1
+
+# ─── PyTorch (CPU build — lightweight for cloud deployment) ─
+# torch==2.3.0+cpu ; sys_platform != "darwin"
+# torch==2.3.0 ; sys_platform == "darwin"
+
+# ─── RAG / Embeddings ──────────────────────────────────────
+# sentence-transformers==2.7.0
+# faiss-cpu==1.8.0
+numpy
+
+# ─── HTTP / Async ──────────────────────────────────────────
+httpx
+aiofiles
+loguru

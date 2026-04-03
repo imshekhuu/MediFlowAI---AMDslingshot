@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}MediFlow AI — Register{% endblock %}
+{% block body %}
+<div class="min-h-screen bg-surface flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-10">
+      <a href="{{ url_for('index') }}" class="inline-flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+          <span class="material-symbols-outlined text-white">medical_services</span>
+        </div>
+        <span class="text-2xl font-black text-on-surface brand-font">MediFlow AI</span>
+      </a>
+      <p class="text-on-surface-variant text-sm mt-2">Create your clinical account</p>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-2xl shadow-primary/10 p-8 border border-primary/5">
+      <h2 class="text-2xl font-extrabold text-on-surface mb-2">Join MediFlow AI</h2>
+      <p class="text-on-surface-variant text-sm mb-8">Set up your account in seconds</p>
+
+      <form method="POST" action="{{ url_for('register') }}" class="space-y-5">
+        <div>
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Email Address</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">mail</span>
+            <input name="email" type="email" required autocomplete="email"
+                   class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/30"
+                   placeholder="you@hospital.com"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Password</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">lock</span>
+            <input name="password" type="password" required autocomplete="new-password"
+                   class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/30"
+                   placeholder="Min 8 characters"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Account Type</label>
+          <select name="role"
+                  class="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm focus:ring-2 focus:ring-primary/30 text-on-surface">
+            <option value="patient">🧑 Patient</option>
+            <option value="doctor">👨‍⚕️ Doctor</option>
+            <option value="admin">⚙️ Admin</option>
+          </select>
+        </div>
+
+        <button type="submit"
+                class="w-full py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+          Create Account
+        </button>
+      </form>
+
+      <div class="mt-6 pt-6 border-t border-outline-variant/20 text-center">
+        <p class="text-sm text-on-surface-variant">
+          Already have an account?
+          <a href="{{ url_for('login') }}" class="text-primary font-bold hover:underline ml-1">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

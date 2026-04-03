@@ -1,0 +1,101 @@
+# ─────────────────────────────────────────────────────────────
+# MediFlow AI Backend — Cloud Run Service Configuration
+# ─────────────────────────────────────────────────────────────
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: mediflow-backend
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        # Auto-scaling configuration
+        autoscaling.knative.dev/minScale: '1'
+        autoscaling.knative.dev/maxScale: '10'
+        # Cloud SQL connection (replace with your instance)
+        run.googleapis.com/cloudsql-instances: YOUR_PROJECT:YOUR_REGION:mediflow-db
+    spec:
+      serviceAccountName: mediflow-backend-sa@YOUR_PROJECT.iam.gserviceaccount.com
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - name: mediflow-backend
+        image: gcr.io/YOUR_PROJECT/mediflow-backend:latest
+        ports:
+        - containerPort: 8080
+          name: http1
+        env:
+        # Database (Cloud SQL PostgreSQL)
+        - name: DATABASE_URL
+          value: postgresql://USER:PASSWORD@/mediflow_db?host=/cloudsql/YOUR_PROJECT:YOUR_REGION:mediflow-db
+        
+        # JWT Configuration
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mediflow-secrets
+              key: jwt-secret-key
+        - name: ALGORITHM
+          value: HS256
+        - name: ACCESS_TOKEN_EXPIRE_MINUTES
+          value: '60'
+        
+        # AI/LLM Configuration
+        - name: HUGGINGFACE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: mediflow-secrets
+              key: huggingface-token
+        - name: HF_MODEL
+          value: mistralai/Mistral-7B-Instruct-v0.2
+        - name: USE_HF_API
+          value: 'true'
+        
+        # RAG/Embeddings
+        - name: EMBED_MODEL
+          value: all-MiniLM-L6-v2
+        - name: FAISS_INDEX_PATH
+          value: /tmp/mediflow_faiss.index
+        - name: FAISS_DOCS_PATH
+          value: /tmp/mediflow_faiss_docs.json
+        
+        # Application Settings
+        - name: APP_NAME
+          value: MediFlow AI
+        - name: APP_ENV
+          value: production
+        - name: ALLOWED_ORIGINS
+          value: https://YOUR_FRONTEND_URL.run.app,https://mediflow.ai
+        
+        resources:
+          limits:
+            cpu: '2'
+            memory: 2Gi
+          requests:
+            cpu: '1'
+            memory: 512Mi
+        
+        # Liveness and readiness probes
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+        
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+  
+  traffic:
+  - percent: 100
+    latestRevision: true

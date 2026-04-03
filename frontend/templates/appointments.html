@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block title %}MediFlow AI — Appointments{% endblock %}
+{% block content %}
+
+<div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+  <div>
+    <h2 class="text-4xl font-extrabold text-on-surface mb-2">Schedule Sanctuary</h2>
+    <p class="text-on-surface-variant text-sm">AI-orchestrated patient flows and appointment management</p>
+  </div>
+  <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">
+    {{ appointments | length }} Scheduled
+  </span>
+</div>
+
+{% if appointments %}
+<div class="space-y-4">
+  {% for appt in appointments %}
+  <div class="bg-surface-container-lowest rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center gap-6 group hover:bg-surface-container transition-colors">
+    <!-- Time indicator -->
+    <div class="flex-shrink-0 w-20 text-center">
+      <div class="w-14 h-14 bg-primary-fixed rounded-2xl flex items-center justify-center mx-auto mb-1">
+        <span class="material-symbols-outlined text-primary">event</span>
+      </div>
+      <p class="text-[10px] font-bold text-on-surface-variant uppercase">
+        {{ appt.appointment_time[:10] if appt.appointment_time else '—' }}
+      </p>
+    </div>
+
+    <!-- Details -->
+    <div class="flex-1">
+      <div class="flex items-center gap-3 mb-2">
+        <h4 class="font-bold text-on-surface">Appointment #{{ appt.id }}</h4>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase
+          {% if appt.status == 'scheduled' %}bg-primary-fixed text-on-primary-fixed-variant
+          {% elif appt.status == 'completed' %}bg-secondary-container text-on-secondary-container
+          {% else %}bg-surface-container text-on-surface-variant{% endif %}">
+          {{ appt.status | capitalize }}
+        </span>
+      </div>
+      <p class="text-xs text-on-surface-variant">
+        Patient #{{ appt.patient_id }} → Doctor #{{ appt.doctor_id }}
+      </p>
+      {% if appt.notes %}
+      <p class="text-sm text-on-surface mt-2">{{ appt.notes }}</p>
+      {% endif %}
+      {% if appt.ai_summary %}
+      <div class="mt-3 p-3 bg-surface-container rounded-xl">
+        <p class="text-[10px] font-bold text-primary uppercase mb-1">AI Summary</p>
+        <p class="text-xs text-on-surface-variant">{{ appt.ai_summary }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Time -->
+    <div class="text-right flex-shrink-0">
+      <p class="text-sm font-bold text-on-surface">
+        {{ appt.appointment_time[11:16] if appt.appointment_time else '—' }}
+      </p>
+      <p class="text-[10px] text-on-surface-variant">UTC</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="bg-surface-container-lowest rounded-3xl p-16 text-center">
+  <span class="material-symbols-outlined text-5xl text-outline mb-4 block">calendar_month</span>
+  <h3 class="text-xl font-bold text-on-surface mb-2">No appointments scheduled</h3>
+  <p class="text-on-surface-variant text-sm">Your schedule is clear.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}MediFlow AI — History{% endblock %}
+{% block content %}
+<div class="mb-8">
+  <h2 class="text-4xl font-extrabold text-on-surface mb-2">Symptom History</h2>
+  <p class="text-on-surface-variant text-sm">{{ logs | length }} logged entries</p>
+</div>
+{% if logs %}
+<div class="space-y-4">
+  {% for log in logs | reverse %}
+  <div class="bg-surface-container-lowest rounded-2xl p-6 flex gap-6 items-start">
+    <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
+      {% if log.ai_priority == 'Emergency' %}bg-tertiary-container text-on-tertiary
+      {% elif log.ai_priority == 'Medium' %}bg-yellow-100 text-yellow-700
+      {% else %}bg-secondary-container text-on-secondary-container{% endif %}">
+      <span class="material-symbols-outlined">
+        {% if log.ai_priority == 'Emergency' %}emergency{% elif log.ai_priority == 'Medium' %}warning{% else %}check_circle{% endif %}
+      </span>
+    </div>
+    <div class="flex-1">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold text-on-surface-variant">{{ log.logged_at[:16].replace('T',' ') if log.logged_at else '—' }}</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase
+          {% if log.ai_priority == 'Emergency' %}bg-tertiary-container text-on-tertiary
+          {% elif log.ai_priority == 'Medium' %}bg-yellow-100 text-yellow-700
+          {% else %}bg-secondary-container text-on-secondary-container{% endif %}">
+          {{ log.ai_priority or 'Unknown' }}
+        </span>
+      </div>
+      <p class="text-sm font-medium text-on-surface mb-2">{{ log.symptoms }}</p>
+      {% if log.ai_explanation %}
+      <p class="text-xs text-on-surface-variant">{{ log.ai_explanation }}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="bg-surface-container-lowest rounded-3xl p-16 text-center">
+  <span class="material-symbols-outlined text-5xl text-outline mb-4 block">history</span>
+  <h3 class="text-xl font-bold text-on-surface mb-2">No history yet</h3>
+  <p class="text-on-surface-variant text-sm mb-6">Submit your first symptom report to see results here.</p>
+  <a href="{{ url_for('symptoms') }}" class="px-6 py-3 bg-primary text-white rounded-full text-sm font-bold hover:opacity-90 transition-all inline-block">
+    Check Symptoms
+  </a>
+</div>
+{% endif %}
+{% endblock %}

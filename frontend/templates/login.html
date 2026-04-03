@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}MediFlow AI — Login{% endblock %}
+{% block body %}
+<div class="min-h-screen bg-surface flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+
+    <!-- Logo -->
+    <div class="text-center mb-10">
+      <a href="{{ url_for('index') }}" class="inline-flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+          <span class="material-symbols-outlined text-white">medical_services</span>
+        </div>
+        <span class="text-2xl font-black text-on-surface brand-font">MediFlow AI</span>
+      </a>
+      <p class="text-on-surface-variant text-sm mt-2">The Clinical Sanctuary</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-3xl shadow-2xl shadow-primary/10 p-8 border border-primary/5">
+      <h2 class="text-2xl font-extrabold text-on-surface mb-2">Welcome back</h2>
+      <p class="text-on-surface-variant text-sm mb-8">Sign in to your MediFlow AI account</p>
+
+      <form method="POST" action="{{ url_for('login') }}" class="space-y-5">
+        <!-- Email -->
+        <div>
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block" for="email">Email Address</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">mail</span>
+            <input id="email" name="email" type="email" required autocomplete="email"
+                   class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/30 placeholder:text-outline"
+                   placeholder="doctor@mediflow.ai"/>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block" for="password">Password</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">lock</span>
+            <input id="password" name="password" type="password" required autocomplete="current-password"
+                   class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/30 placeholder:text-outline"
+                   placeholder="••••••••"/>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="w-full py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:opacity-90 hover:scale-[1.01] transition-all">
+          Sign In to MediFlow AI
+        </button>
+      </form>
+
+      <div class="mt-6 pt-6 border-t border-outline-variant/20 text-center">
+        <p class="text-sm text-on-surface-variant">
+          Don't have an account?
+          <a href="{{ url_for('register') }}" class="text-primary font-bold hover:underline ml-1">Create one</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Demo credentials hint -->
+    <div class="mt-6 p-4 bg-surface-container rounded-2xl text-xs text-on-surface-variant text-center">
+      <p class="font-bold text-on-surface mb-1">🔑 Demo Credentials</p>
+      <p>Admin: <code class="bg-white px-1 rounded">admin@mediflow.ai</code> / <code class="bg-white px-1 rounded">admin123</code></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

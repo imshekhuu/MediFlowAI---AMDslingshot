@@ -1,0 +1,70 @@
+# ─────────────────────────────────────────────────────────────
+# MediFlow AI Frontend — Cloud Run Service Configuration
+# ─────────────────────────────────────────────────────────────
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: mediflow-frontend
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        # Auto-scaling configuration
+        autoscaling.knative.dev/minScale: '1'
+        autoscaling.knative.dev/maxScale: '5'
+    spec:
+      serviceAccountName: mediflow-frontend-sa@YOUR_PROJECT.iam.gserviceaccount.com
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - name: mediflow-frontend
+        image: gcr.io/YOUR_PROJECT/mediflow-frontend:latest
+        ports:
+        - containerPort: 8080
+          name: http1
+        env:
+        # Flask Configuration
+        - name: FLASK_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mediflow-secrets
+              key: flask-secret-key
+        - name: PORT
+          value: '8080'
+        - name: FLASK_DEBUG
+          value: 'false'
+        
+        # Backend API URL (Cloud Run backend URL)
+        - name: API_BASE_URL
+          value: https://mediflow-backend-XXXXX.run.app
+        
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+          requests:
+            cpu: '0.5'
+            memory: 256Mi
+        
+        # Health probes
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+  
+  traffic:
+  - percent: 100
+    latestRevision: true
