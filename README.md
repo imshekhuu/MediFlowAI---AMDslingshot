@@ -1,92 +1,106 @@
-# 🚀 MediFlow AI — Smart Healthcare Management System
+# 🚀 MediFlow AI — Vibe-Coded Smart Healthcare Platform
 
-An AI-powered healthcare platform that intelligently manages patients, assists doctors, and optimizes hospital workflows using LLMs, ML, and real-time analytics.
-
----
-
-## 🌐 Live Demo
-
-Frontend: https://mediflow-frontend-373566149252.asia-south1.run.app  
-API Docs: https://mediflow-backend-373566149252.asia-south1.run.app/docs  
+> ⚡ Built with Vibe Coding + AI-first development  
+> 🧠 Powered by LLMs, ML, and intelligent agents  
+> ☁️ Deployed on Google Cloud  
 
 ---
 
-## 🧠 Problem Statement
+## 🌐 Live Product
 
-Hospitals and clinics face:
-- Long patient wait times  
-- Poor prioritization of critical cases  
-- Manual workflows  
-- Lack of AI-driven insights  
+- 🎨 Frontend: https://mediflow-frontend-373566149252.asia-south1.run.app  
+- ⚙️ API Docs: https://mediflow-backend-373566149252.asia-south1.run.app/docs  
 
 ---
 
-## 💡 Solution — MediFlow AI
+## 🧠 What is Vibe Coding?
 
-MediFlow AI acts as a digital hospital brain that:
-- Prioritizes patients using AI triage  
-- Assists doctors with AI insights  
-- Enables smart scheduling  
-- Provides real-time analytics  
-
----
-
-## ✨ Key Features
-
-- AI Patient Triage (Emergency / Medium / Normal)
-- Doctor Dashboard with AI Insights  
-- AI Chatbot for symptom analysis  
-- Real-time analytics dashboard  
-- Smart appointment system  
-- RAG-based patient history search  
+This project is built using Vibe Coding:
+- Ideas → prompts  
+- AI → generates code  
+- Rapid iteration → faster product development  
 
 ---
 
-## 🏗️ Tech Stack
+## 💡 Solution
 
-Frontend: Next.js, Tailwind CSS  
-Backend: FastAPI, SQLAlchemy  
-AI/ML: Hugging Face, LangChain, FAISS  
-Cloud: Google Cloud Run, Firestore / Cloud SQL  
+MediFlow AI acts as a **Digital Hospital Brain**:
+- AI triages patients  
+- Doctors get insights  
+- Admins monitor analytics  
 
 ---
 
-## 🚀 Getting Started
+## ✨ Features
 
-### Backend
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+- AI Patient Triage  
+- AI Chatbot  
+- Smart Scheduling  
+- Real-time Dashboard  
+- RAG-based history  
 
-### Frontend
-cd frontend
-npm install
-npm run dev
+---
+
+## 🏗️ Architecture
+
+User → Frontend → Backend → AI Layer → DB → Response
+
+---
+
+## 📁 Structure
+
+mediflow-ai/
+├── frontend/
+├── backend/
+├── docker-compose.yml
+└── README.md
+
+---
+
+## ⚙️ Tech Stack
+
+Frontend: Next.js, Tailwind  
+Backend: FastAPI  
+AI: Hugging Face, LangChain  
+Cloud: Google Cloud Run  
+
+---
+
+## 🚀 Run Locally
+
+Backend:
+cd backend  
+pip install -r requirements.txt  
+uvicorn app.main:app --reload  
+
+Frontend:
+cd frontend  
+npm install  
+npm run dev  
 
 ---
 
 ## 🐳 Docker
 
-docker-compose up --build
+docker-compose up --build  
 
 ---
 
 ## ☁️ Deployment
 
 gcloud builds submit --tag gcr.io/PROJECT_ID/mediflow  
-gcloud run deploy mediflow --platform managed --region asia-south1 --allow-unauthenticated  
+gcloud run deploy mediflow --region asia-south1  
 
 ---
 
-## 🏆 Hackathon Highlights
+## 🏆 Highlights
 
-- AI-first architecture  
-- Real-time decision making  
-- Cloud-native deployment  
-- Scalable design  
+- AI-first system  
+- Cloud deployed  
+- Scalable  
 
 ---
 
-## ❤️ Final Note
+## ❤️ Final
 
-MediFlow AI is a scalable AI healthcare product ready for real-world deployment.
+A vibe-coded AI product ready for real-world impact.
